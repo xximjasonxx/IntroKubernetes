@@ -1,0 +1,33 @@
+@model PersonViewModel
+@{
+    ViewData["Title"] = "Create a Person";    
+}
+
+<h2>Create a Person</h2>
+<hr />
+
+<div class="container">
+    <div class="col-md-7">
+@using(Html.BeginForm("create", "person", FormMethod.Post))
+{
+        <div class="mb-3">
+            @Html.LabelFor(model => model.FirstName)
+            @Html.TextBoxFor(model => model.FirstName, new { @class = "form-control" })
+        </div>
+
+        <div class="mb-3">
+            @Html.LabelFor(model => model.LastName)
+            @Html.TextBoxFor(model => model.LastName, new { @class = "form-control" })
+        </div>
+
+        <div class="mb-3">
+            @Html.LabelFor(model => model.Age)
+            @Html.TextBoxFor(model => model.Age, new { @class = "form-control" })
+        </div>
+
+        <div class="mb-3">
+            <button type="submit" class="btn btn-primary">Send</button>
+        </div>
+}
+    </div>
+</div>
