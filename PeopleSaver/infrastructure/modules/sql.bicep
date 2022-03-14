@@ -6,7 +6,6 @@ param adminLoginName string
 @secure()
 param adminPassword string
 param databases array
-param adAdministrator object
 
 module createdServer 'sqlserver.bicep' = {
   name: 'deployServer-${serverName}'
@@ -15,7 +14,6 @@ module createdServer 'sqlserver.bicep' = {
     location: location
     adminLoginName: adminLoginName
     adminPassword: adminPassword
-    adAdministrator: adAdministrator
   }
 }
 
@@ -31,3 +29,7 @@ module createdDatabases 'sqlserverdb.bicep' = [for database in databases: {
     createdServer
   ]
 }]
+
+// outputs
+output fqdn string = createdServer.outputs.fqdn
+output databaseName string = createdDatabases[0].outputs.databaseName

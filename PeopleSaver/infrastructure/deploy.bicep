@@ -4,6 +4,9 @@ targetScope = 'subscription'
 param location string = deployment().location
 param adminLoginName string
 
+@secure()
+param adminPassword string
+
 var resourceGroupName = 'rg-k8s-sampleapp'
 
 module rg 'modules/resource-group.bicep' = {
@@ -20,12 +23,8 @@ module sqlserver 'modules/sql.bicep' = {
   params: {
     serverName: 'sqlserver-k8s-sampleapp'
     location: location
-    adminLoginName: 'azureuser'
-    adminPassword: 'P@ssw0rd01!'
-    adAdministrator: {
-      objectId: 'f1a2c6f4-c875-4d5c-b25c-2cf5e9a6ad84'
-      loginName: adminLoginName
-    }
+    adminLoginName: adminLoginName
+    adminPassword: adminPassword
     databases: [
       {
         name: 'peopleDatabase'
@@ -41,4 +40,50 @@ module sqlserver 'modules/sql.bicep' = {
   dependsOn: [
     rg
   ]
+}
+
+module appService 'modules/appservice.bicep' = {
+  name: 'appServiceDeploy'
+  scope: resourceGroup(resourceGroupName)
+  params: {
+    baseName: 'k8s-sampleapp'
+    location: location
+  }
+}
+
+// get shared key vault reference
+resource dbInfoKeyVault 'Microsoft.KeyVault/vaults@2021-11-01-preview' existing = {
+  name: 'kv-shared-jx01'
+  scope: resourceGroup('rg-shared')
+}
+
+module keyVault 'modules/keyvault.bicep' = {
+  name: 'keyVaultDeploy'
+  scope: resourceGroup(resourceGroupName)
+  params: {
+    keyVaultName: 'kv-k8s-sampleapp'
+    location: location
+    accessPolicies: [
+      {
+        objectId: appService.outputs.appServiceIdentityPrincipalId
+        secretPermissions: [
+          'get'
+          'list'
+        ]
+      }
+    ]
+  }
+}
+
+module connectionStringSecret 'modules/connectionStringSecret.bicep' = {
+  name: 'connectionStringSecretDeploy'
+  scope: resourceGroup(resourceGroupName)
+  params: {
+    dbUserName: dbInfoKeyVault.getSecret('k8sSampleDbLogin')
+    dbPassword: dbInfoKeyVault.getSecret('k8sSampleDbPassword')
+    serverDomain: sqlserver.outputs.fqdn
+    databaseName: sqlserver.outputs.databaseName
+    targetKeyVaultName: 'kv-k8s-sampleapp'
+    targetKeyVaultSecretName: 'ConnectionString'
+  }
 }

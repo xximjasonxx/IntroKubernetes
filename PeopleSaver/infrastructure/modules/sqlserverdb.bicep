@@ -11,7 +11,7 @@ var ranges = {
   'TB': 1024 * 1024 * 1024 * 1024
 }
 
-resource createdDatabases 'Microsoft.Sql/servers/databases@2021-08-01-preview' = {
+resource createdDatabase 'Microsoft.Sql/servers/databases@2021-08-01-preview' = {
   name: '${serverName}/${database.name}'
   location: location
   sku: {
@@ -25,3 +25,6 @@ resource createdDatabases 'Microsoft.Sql/servers/databases@2021-08-01-preview' =
     catalogCollation: 'SQL_Latin1_General_CP1_CI_AS'
   }
 }
+
+// outputs
+output databaseName string = createdDatabase.name
