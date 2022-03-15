@@ -1,7 +1,18 @@
+
+using Azure.Identity;
 using Microsoft.EntityFrameworkCore;
 using PeopleSaver.Data;
 
 var builder = WebApplication.CreateBuilder(args);
+var options = new DefaultAzureCredentialOptions
+{
+    ExcludeEnvironmentCredential = true,
+    ExcludeSharedTokenCacheCredential = true,
+    ExcludeVisualStudioCredential = true,
+    ExcludeVisualStudioCodeCredential = true
+};
+
+builder.Configuration.AddAzureKeyVault(new Uri($"https://{builder.Configuration["VaultName"]}.vault.azure.net/"), new DefaultAzureCredential(options));
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
@@ -13,11 +24,9 @@ builder.Services.AddDbContext<IContext, PersonDbContext>(options =>
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 

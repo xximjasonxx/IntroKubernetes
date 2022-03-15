@@ -9,7 +9,7 @@ namespace PeopleSaver.Data
         public PersonDbContext(DbContextOptions<PersonDbContext> options)
             : base(options)
         {
-            
+            Database.Migrate();
         }
     }
 
