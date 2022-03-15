@@ -25,3 +25,6 @@ resource vault 'Microsoft.KeyVault/vaults@2021-11-01-preview' = {
     accessPolicies: accessPoliciesObject
   }
 }
+
+// outputs
+output vaultName string = keyVaultName

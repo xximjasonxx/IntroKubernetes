@@ -17,6 +17,15 @@ module rg 'modules/resource-group.bicep' = {
   }
 }
 
+module identity 'modules/identity.bicep' = {
+  name: 'identityDeploy'
+  scope: resourceGroup(resourceGroupName)
+  params: {
+    name: 'id-k8s-sampleapp'
+    location: location
+  }
+}
+
 module sqlserver 'modules/sql.bicep' = {
   name: 'sqlserverDeploy'
   scope: resourceGroup(resourceGroupName)
@@ -42,15 +51,6 @@ module sqlserver 'modules/sql.bicep' = {
   ]
 }
 
-module appService 'modules/appservice.bicep' = {
-  name: 'appServiceDeploy'
-  scope: resourceGroup(resourceGroupName)
-  params: {
-    baseName: 'k8s-sampleapp'
-    location: location
-  }
-}
-
 // get shared key vault reference
 resource dbInfoKeyVault 'Microsoft.KeyVault/vaults@2021-11-01-preview' existing = {
   name: 'kv-shared-jx01'
@@ -65,11 +65,31 @@ module keyVault 'modules/keyvault.bicep' = {
     location: location
     accessPolicies: [
       {
-        objectId: appService.outputs.appServiceIdentityPrincipalId
+        objectId: identity.outputs.objectId
         secretPermissions: [
           'get'
           'list'
         ]
+      }
+    ]
+  }
+}
+
+module appService 'modules/appservice.bicep' = {
+  name: 'appServiceDeploy'
+  scope: resourceGroup(resourceGroupName)
+  params: {
+    baseName: 'k8s-sampleapp'
+    location: location
+    identityId: identity.outputs.resourceId
+    appSettings: [
+      {
+        name: 'VaultName'
+        value: keyVault.outputs.vaultName
+      }
+      {
+        name: 'ManagedIdentityClientId'
+        value: identity.outputs.clientId
       }
     ]
   }

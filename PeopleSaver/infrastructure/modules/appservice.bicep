@@ -3,6 +3,8 @@ targetScope = 'resourceGroup'
 
 param baseName string
 param location string
+param identityId string
+param appSettings array
 
 resource plan 'Microsoft.Web/serverfarms@2021-02-01' = {
   name: 'plan-${baseName}'
@@ -22,7 +24,10 @@ resource app 'Microsoft.Web/sites@2021-02-01' = {
   name: 'app-${baseName}'
   location: location
   identity: {
-    type: 'SystemAssigned'
+    type: 'UserAssigned'
+    userAssignedIdentities: {
+      '${identityId}': {}
+    }
   }
   properties: {
     serverFarmId: plan.id
@@ -30,9 +35,7 @@ resource app 'Microsoft.Web/sites@2021-02-01' = {
     siteConfig: {
       linuxFxVersion: 'DOTNETCORE|6.0'
       alwaysOn: true
+      appSettings: appSettings
     }
   }
 }
-
-// outputs
-output appServiceIdentityPrincipalId string = app.identity.principalId

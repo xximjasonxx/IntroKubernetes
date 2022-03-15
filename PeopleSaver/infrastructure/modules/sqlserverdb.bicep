@@ -27,4 +27,4 @@ resource createdDatabase 'Microsoft.Sql/servers/databases@2021-08-01-preview' = 
 }
 
 // outputs
-output databaseName string = createdDatabase.name
+output databaseName string = last(split(createdDatabase.name, '/'))

@@ -6,6 +6,7 @@ using PeopleSaver.Data;
 var builder = WebApplication.CreateBuilder(args);
 var options = new DefaultAzureCredentialOptions
 {
+    ManagedIdentityClientId = builder.Configuration["ManagedIdentityClientId"],
     ExcludeEnvironmentCredential = true,
     ExcludeSharedTokenCacheCredential = true,
     ExcludeVisualStudioCredential = true,
