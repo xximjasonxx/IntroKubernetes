@@ -17,7 +17,7 @@ resource vault 'Microsoft.KeyVault/vaults@2021-11-01-preview' = {
 }
 
 var supportedRoles = {
-  'Key Vault Secret User': '/subscriptions/${subscription().subscriptionId}/providers/Microsoft.Authorization/roleDefinitions/4633458b-17de-408a-b874-0445c86b69e6'
+  'Key Vault Secrets User': '/subscriptions/${subscription().subscriptionId}/providers/Microsoft.Authorization/roleDefinitions/4633458b-17de-408a-b874-0445c86b69e6'
 }
 
 resource assignments 'Microsoft.Authorization/roleAssignments@2020-10-01-preview' = [for (roleAssignment, indx) in roleAssignments: {
