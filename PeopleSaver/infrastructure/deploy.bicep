@@ -63,13 +63,10 @@ module keyVault 'modules/keyvault.bicep' = {
   params: {
     keyVaultName: 'kv-k8s-sampleapp'
     location: location
-    accessPolicies: [
+    roleAssignments: [
       {
-        objectId: identity.outputs.objectId
-        secretPermissions: [
-          'get'
-          'list'
-        ]
+        userId: identity.outputs.objectId
+        roleName: 'Key Vault Secrets User'
       }
     ]
   }
