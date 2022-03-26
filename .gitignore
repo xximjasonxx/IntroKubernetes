@@ -3,3 +3,6 @@ obj/
 Properties/
 .vs/
 .vscode/
+
+*.secret.yaml
+*.issuer.yaml

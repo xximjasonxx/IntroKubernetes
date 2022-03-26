@@ -1,0 +1,32 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: peoplesaver-ingress
+  namespace: peoplesaver
+  annotations:
+    kubernetes.io/tls-acme: "true"
+    kubernetes.io/ingress.class: "nginx"
+
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+
+    cert-manager.io/issuer: peoplesaver-issuer-production
+
+spec:
+  tls:
+  - hosts:
+    - peoplesaver.farrellsoft.dev
+    secretName: peoplesaver-farrellsoft-dev-tls
+  
+  rules:
+    - host: peoplesaver.farrellsoft.dev
+      http:
+        paths:
+        - path: /
+          pathType: Prefix
+          backend:
+            service:
+              name: peoplesaver-service
+              port:
+                number: 80

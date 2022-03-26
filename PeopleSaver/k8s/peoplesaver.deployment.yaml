@@ -19,10 +19,14 @@ spec:
     spec:
       containers:
         - name: main
-          image: acraksintro.azurecr.io/peoplesaver:v3
+          image: acraksintro.azurecr.io/peoplesaver:v4.1
           ports:
             - containerPort: 80
             - containerPort: 443
           env:
             - name: ConnectionString
-              value:  'Not a Connection String'
+              valueFrom:
+                secretKeyRef:
+                  name: peoplesaver-connectionstring
+                  key: connectionString
+      restartPolicy: Always
