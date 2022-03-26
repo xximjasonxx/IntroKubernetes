@@ -1,10 +1,6 @@
 
 param serverName string
 param location string
-param adminLoginName string
-
-@secure()
-param adminPassword string
 param databases array
 
 module createdServer 'sqlserver.bicep' = {
@@ -12,8 +8,6 @@ module createdServer 'sqlserver.bicep' = {
   params: {
     serverName: serverName
     location: location
-    adminLoginName: adminLoginName
-    adminPassword: adminPassword
   }
 }
 

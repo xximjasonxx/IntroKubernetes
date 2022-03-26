@@ -3,7 +3,6 @@ targetScope = 'resourceGroup'
 
 param baseName string
 param location string
-param identityId string
 param appSettings array
 
 resource plan 'Microsoft.Web/serverfarms@2021-02-01' = {
@@ -23,12 +22,6 @@ resource plan 'Microsoft.Web/serverfarms@2021-02-01' = {
 resource app 'Microsoft.Web/sites@2021-02-01' = {
   name: 'app-${baseName}'
   location: location
-  identity: {
-    type: 'UserAssigned'
-    userAssignedIdentities: {
-      '${identityId}': {}
-    }
-  }
   properties: {
     serverFarmId: plan.id
     httpsOnly: false

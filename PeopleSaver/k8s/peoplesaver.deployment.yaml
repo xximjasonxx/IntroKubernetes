@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: peoplesaver-deployment
+  namespace: peoplesaver
+  labels:
+    app: peoplesaver
+
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: peoplesaver
+  template:
+    metadata:
+      labels:
+        app: peoplesaver
+
+    spec:
+      containers:
+        - name: main
+          image: acraksintro.azurecr.io/peoplesaver:v3
+          ports:
+            - containerPort: 80
+            - containerPort: 443
+          env:
+            - name: ConnectionString
+              value:  'Not a Connection String'
