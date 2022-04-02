@@ -17,7 +17,7 @@ CMD [ "dotnet", "PeopleSaver.dll" ]
 ## 2. Build and Push the Image (we need to use ACR build due to M1)
 az acr build --registry acraksintro --file Dockerfile --image peoplesaver:v4.1 .
 
-## 3. Create a Deployment for the Pods
+## 3. Create a Deployment for the Pods - peoplesaver.deployment.yaml
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -51,7 +51,7 @@ spec:
                   key: connectionString
       restartPolicy: Always
       
-## 4. Add a Service of type __LoadBalancer__
+## 4. Add a Service of type __LoadBalancer__ - peoplesaver.service.yaml
 apiVersion: v1
 kind: Service
 metadata:
@@ -106,7 +106,8 @@ metadata:
 
 spec:
   rules:
-    - http:
+    - host: 20.121.93.208.nip.io
+      http:
         paths:
         - path: /
           pathType: Prefix
