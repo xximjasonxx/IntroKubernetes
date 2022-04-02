@@ -15,7 +15,7 @@ EXPOSE 443
 CMD [ "dotnet", "PeopleSaver.dll" ]
 
 ## 2. Build and Push the Image (we need to use ACR build due to M1)
-az acr build --registry acraksintro --file Dockerfile --image peoplesaver:v4.1 .
+az acr build --registry acraksintro --file Dockerfile --image peoplesaver:v1 .
 
 ## 3. Create a Deployment for the Pods - peoplesaver.deployment.yaml
 apiVersion: apps/v1
@@ -98,13 +98,10 @@ metadata:
   name: peoplesaver-ingress
   namespace: peoplesaver
   annotations:
-    kubernetes.io/ingress.class: "nginx"
-
     nginx.ingress.kubernetes.io/rewrite-target: /
-    nginx.ingress.kubernetes.io/ssl-redirect: "true"
-    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
 
 spec:
+  ingressClassName: nginx
   rules:
     - host: 20.121.93.208.nip.io
       http:
@@ -142,7 +139,6 @@ metadata:
   namespace: peoplesaver
   annotations:
     kubernetes.io/tls-acme: "true"
-    kubernetes.io/ingress.class: "nginx"
 
     nginx.ingress.kubernetes.io/rewrite-target: /
     nginx.ingress.kubernetes.io/ssl-redirect: "true"
@@ -151,6 +147,7 @@ metadata:
     cert-manager.io/issuer: peoplesaver-issuer-production
 
 spec:
+  ingressClassName: nginx
   tls:
   - hosts:
     - peoplesaver.farrellsoft.dev
