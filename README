@@ -39,7 +39,7 @@ spec:
     spec:
       containers:
         - name: main
-          image: acraksintro.azurecr.io/peoplesaver:v4.1
+          image: acraksintro.azurecr.io/peoplesaver:v1
           ports:
             - containerPort: 80
             - containerPort: 443
