@@ -15,7 +15,8 @@ spec:
     spec:
       containers:
       - name: weatherapp-container
-        image: xximjasonxx/weatherapp:1.1.0
+        image: xximjasonxx/weatherapp-arm:v1.0.0
+        #image: xximjasonxx/weatherapp-amd:v1.0.0
         resources:
           limits:
             memory: "128Mi"
